@@ -8,7 +8,7 @@ import (
 	"github.com/yuyistudio/aor_server/implement/message_package"
 )
 
-func NewTcpJsonServer(tcpConf *network.TcpServerConfig) *framework.ServerFramework {
-	f := framework.NewServerFramework(true, handler.NewJsonHandler(), network.NewTcpServer(tcpConf), parser.NewJsonParser(), message_package.NewStreamingPackager())
+func NewUdpJsonServer(udpConf *network.UdpServerConfig) *framework.ServerFramework {
+	f := framework.NewServerFramework(false, handler.NewJsonHandler(), network.NewUdpServer(udpConf), parser.NewJsonParser(), message_package.NewDiagramPackager())
 	return f
 }

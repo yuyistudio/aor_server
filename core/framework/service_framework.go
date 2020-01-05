@@ -32,7 +32,10 @@ func (frame *ServiceFramework) Start() {
 	log.Info("starting %d server(server)", len(frame.servers))
 	for index, server := range frame.servers {
 		log.Info("starting server-%d", index)
-		server.Start()
+		if err := server.Start(); err != nil {
+			log.Error("failed to start server-%d, error %v", index, err)
+			return
+		}
 	}
 	log.Info("service started, servers count %d", len(frame.servers))
 

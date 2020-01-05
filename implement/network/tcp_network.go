@@ -55,8 +55,8 @@ func NewTcpServer(conf *TcpServerConfig) core.Server {
 	return s
 }
 
-func (s *TCPServer) SetCallback(cb core.ServerCallbackFn) {
-	s.cb = cb
+func (server *TCPServer) SetCallback(cb core.ServerCallbackFn) {
+	server.cb = cb
 }
 
 func (server *TCPServer) Start() error {

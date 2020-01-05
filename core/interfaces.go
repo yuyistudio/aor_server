@@ -2,11 +2,12 @@ package core
 
 import (
 	"reflect"
+	"io"
 )
 
 type Connection interface {
-	Read() (*MessagePackage, error)
-	Write(msgID MessageID, bytes []byte) error
+	ReadMessage() (*MessagePackage, error)
+	WriteMessage(msgID MessageID, bytes []byte) error
 	Close() error
 }
 
@@ -18,8 +19,9 @@ type Server interface {
 }
 
 type Parser interface {
-	Marshal(handler Handler, msgID MessageID, data interface{}) (bytes []byte, err error)
-	Unmarshal(handler Handler, msgPkg *MessagePackage) (data interface{}, err error)
+	// 通过handler，获取callback，进而获取
+	Marshal(msgID MessageID, data interface{}) (bytes []byte, err error)
+	Unmarshal(msgPkg *MessagePackage, data interface{}) error
 }
 
 type Callback struct {
@@ -32,4 +34,9 @@ type Handler interface {
 	RegisterCallback(msgID MessageID, fn interface{})
 	GetCallback(msgID MessageID) *Callback
 	Process(conn Connection, msgID MessageID, req interface{}) (response interface{}, err error)
+}
+
+type MessagePackager interface {
+	ReadPackage(conn io.Reader) (*MessagePackage, error)
+	Write(conn io.Writer, msgID MessageID, bytes []byte) error
 }

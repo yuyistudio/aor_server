@@ -3,26 +3,25 @@ package connection
 import (
 	"github.com/yuyistudio/aor_server/core"
 	"net"
+	"github.com/yuyistudio/aor_server/implement/message_package"
 )
 
 type TcpConnection struct {
-	conn           net.Conn
-	packageHandler *core.MessagePackageHandler
+	conn     net.Conn
 }
 
 func NewTcpConnection(conn net.Conn) *TcpConnection {
-	c := new(TcpConnection)
-	c.conn = conn
-	c.packageHandler = core.NewMessagePackageHandler()
-	return c
+	tcpConn := new(TcpConnection)
+	tcpConn.conn = conn
+	return tcpConn
 }
 
-func (p *TcpConnection) Read() (*core.MessagePackage, error) {
-	return p.packageHandler.ReadPackage(p.conn)
+func (p *TcpConnection) ReadMessage() (*core.MessagePackage, error) {
+	return message_package.GlobalStreamingPackager.ReadPackage(p.conn)
 }
 
-func (p *TcpConnection) Write(msgID core.MessageID, bytes []byte) error {
-	return p.packageHandler.Write(p.conn, msgID, bytes)
+func (p *TcpConnection) WriteMessage(msgID core.MessageID, bytes []byte) error {
+	return message_package.GlobalStreamingPackager.Write(p.conn, msgID, bytes)
 }
 
 func (p *TcpConnection) Close() error {
